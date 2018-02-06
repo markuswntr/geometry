@@ -80,7 +80,7 @@ extension Point: Arithmetic {
     /// - Parameters:
     ///   - lhs: The first value to add.
     ///   - rhs: The second value to add.
-    static func + (lhs: Point, rhs: Point) -> Point {
+    public static func + (lhs: Point, rhs: Point) -> Point {
         return Point(x: lhs.x + rhs.x, y: lhs.y + rhs.y)
     }
 
@@ -89,7 +89,7 @@ extension Point: Arithmetic {
     /// - Parameters:
     ///   - lhs: The first value to add.
     ///   - rhs: The second value to add.
-    static func += (lhs: inout Point, rhs: Point) {
+    public static func += (lhs: inout Point, rhs: Point) {
         lhs.x += rhs.x
         lhs.y += rhs.y
     }
@@ -108,7 +108,7 @@ extension Point: Arithmetic {
     /// - Parameters:
     ///   - lhs: A numeric value.
     ///   - rhs: The value to subtract from `lhs`.
-    static func - (lhs: Point, rhs: Point) -> Point {
+    public static func - (lhs: Point, rhs: Point) -> Point {
         return Point(x: lhs.x - rhs.x, y: lhs.y - rhs.y)
     }
 
@@ -117,7 +117,7 @@ extension Point: Arithmetic {
     /// - Parameters:
     ///   - lhs: A numeric value.
     ///   - rhs: The value to subtract from `lhs`.
-    static func -= (lhs: inout Point, rhs: Point) {
+    public static func -= (lhs: inout Point, rhs: Point) {
         lhs.x -= rhs.x
         lhs.y -= rhs.y
     }
@@ -136,7 +136,7 @@ extension Point: Arithmetic {
     /// - Parameters:
     ///   - lhs: The first value to multiply.
     ///   - rhs: The second value to multiply.
-    static func * (lhs: Point, rhs: Point) -> Point {
+    public static func * (lhs: Point, rhs: Point) -> Point {
         return Point(x: lhs.x * rhs.x, y: lhs.y * rhs.y)
     }
 
@@ -145,7 +145,7 @@ extension Point: Arithmetic {
     /// - Parameters:
     ///   - lhs: The first value to multiply.
     ///   - rhs: The second value to multiply.
-    static func *= (lhs: inout Point, rhs: Point) {
+    public static func *= (lhs: inout Point, rhs: Point) {
         lhs.x *= rhs.x
         lhs.y *= rhs.y
     }
