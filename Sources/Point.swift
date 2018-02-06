@@ -24,7 +24,7 @@ public struct Point<Numeric: Swift.Numeric> {
 
 extension Point {
 
-    /// The point at the an arbitrary point `O` (the origin)
+    /// The point at the arbitrary point `O` (the origin)
     public static var zero: Point {
         return .init(x: 0, y: 0)
     }
