@@ -20,7 +20,7 @@ internal protocol SignedArithmetic {
     prefix static func - (operand: Self) -> Self
 }
 
-extension SignedSignedArithmetic {
+extension SignedArithmetic {
 
     /// Returns the given number unchanged.
     ///
