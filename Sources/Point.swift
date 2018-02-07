@@ -9,6 +9,11 @@ public struct Point<Numeric: Swift.Numeric>: Equatable {
     /// The y-coordinate of the point.
     public var y: Numeric
 
+    /// The point at the arbitrary point `O` (the origin)
+    public static var zero: Point {
+        return .init(x: 0, y: 0)
+    }
+
     /// Initializes a new point at given coordinates.
     ///
     /// - Parameters:
@@ -20,14 +25,9 @@ public struct Point<Numeric: Swift.Numeric>: Equatable {
     }
 }
 
-// MARK: Origin & Comparable
+// MARK: Comparable
 
 extension Point: Comparable where Numeric: Comparable {
-
-    /// The point at the arbitrary point `O` (the origin)
-    public static var zero: Point {
-        return .init(x: 0, y: 0)
-    }
 
     /// Returns a Boolean value indicating whether the `x + y` of the first
     /// point is less than `x + y` of the second point.
@@ -40,26 +40,45 @@ extension Point: Comparable where Numeric: Comparable {
     }
 }
 
-// MARK: Arithmetic
+// MARK: String Convertible
 
-extension Point: Arithmetic {
+extension Point: CustomStringConvertible where Numeric: CustomStringConvertible {
 
-    /// Adds two points and produces their sum.
+    /// A textual representation of this instance.
+    ///
+    /// Calling this property directly is discouraged. Instead, convert an
+    /// instance of any type to a string by using the `String(describing:)`
+    /// initializer.
     ///
     /// Example:
     /// ```
-    /// let p1 = Point(x: 1, y: 2)
-    /// let p2 = Point(x: 1, y: 2)
-    /// let p3 = p1 + p2
-    /// /// p3.x == 2
-    /// /// p3.y == 4
+    ///     var p = Point(x: 21, y: 30)
+    ///     let s = String(describing: p)
+    ///     print(s)
+    ///     // Prints "(x: 21, y: 30)"
     /// ```
+    public var description: String {
+        return "(x: \(String(describing: x)), y: \(String(describing: y)))"
+    }
+}
+
+extension Point: CustomDebugStringConvertible where Numeric: CustomDebugStringConvertible {
+
+    /// A textual representation of this instance, suitable for debugging.
     ///
-    /// - Parameters:
-    ///   - lhs: The first value to add.
-    ///   - rhs: The second value to add.
-    public static func + (lhs: Point, rhs: Point) -> Point {
-        return Point(x: lhs.x + rhs.x, y: lhs.y + rhs.y)
+    /// Calling this property directly is discouraged. Instead, convert an
+    /// instance of any type to a string by using the `String(reflecting:)`
+    /// initializer.
+    ///
+    /// Example:
+    /// ```
+    ///     var p = Point(x: 21, y: 30)
+    ///     let s = String(reflecting: p)
+    ///     print(s)
+    ///     // Prints "Point<Int>(x: 21, y: 30)"
+    /// ```
+    public var debugDescription: String {
+        return "Point<\(String(describing: Numeric.self))>(x: \(String(describing: x)), y: \(String(describing: y)))"
     }
 
     /// Adds two values and stores the result in the left-hand-side variable.
