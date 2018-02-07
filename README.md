@@ -3,7 +3,7 @@
 ![Swift Version][swift]
 ![Build Status][ci]
 
-Defines relative position of figures, size, rectangles and the properties of space.
+Defines relative position of figures, vector, size, rectangle and the properties of space.
 The module does not have any other dependency and builds on macOS and Linux.
 
 ## Point

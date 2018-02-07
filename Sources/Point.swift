@@ -1,7 +1,7 @@
 import Foundation
 
 /// A structure that defines a point in a two-dimensional coordinate system.
-public struct Point<Numeric: Swift.Numeric> {
+public struct Point<Numeric: Swift.Numeric>: Equatable {
 
     /// The x-coordinate of the point.
     public var x: Numeric
@@ -20,36 +20,14 @@ public struct Point<Numeric: Swift.Numeric> {
     }
 }
 
-// MARK: Zero
+// MARK: Origin & Comparable
 
-extension Point {
+extension Point: Comparable where Numeric: Comparable {
 
     /// The point at the arbitrary point `O` (the origin)
     public static var zero: Point {
         return .init(x: 0, y: 0)
     }
-}
-
-// MARK: Equatable
-
-extension Point: Equatable {
-
-    /// Returns a Boolean value indicating whether two values are equal.
-    ///
-    /// Equality is the inverse of inequality. For any values `a` and `b`,
-    /// `a == b` implies that `a != b` is `false`.
-    ///
-    /// - Parameters:
-    ///   - lhs: A value to compare.
-    ///   - rhs: Another value to compare.
-    public static func == (lhs: Point, rhs: Point) -> Bool {
-        return lhs.x == rhs.x && lhs.y == rhs.y
-    }
-}
-
-// MARK: Comparable
-
-extension Point: Comparable where Numeric: Comparable {
 
     /// Returns a Boolean value indicating whether the `x + y` of the first
     /// point is less than `x + y` of the second point.
