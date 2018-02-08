@@ -156,6 +156,7 @@ class PointTests: XCTestCase {
         ("testAdditionOverflow", testAdditionOverflow),
         ("testSubtractionOverflow", testSubtractionOverflow),
         ("testMultiplicationOverflow", testMultiplicationOverflow),
-        ("testSigning", testSigning)
+        ("testSigning", testSigning),
+        ("testIntegerToFloatingCast", testIntegerToFloatingCast)
     ]
 }
