@@ -142,7 +142,7 @@ extension Point: BasicArithmetic {
 }
 
 // MARK: Extended
-
+// TODO: Adjust examples in comments
 extension Point: ExtendedArithmetic where Numeric: BinaryInteger {
 
     /// Divides the first value by the second and stores the quotient in the
@@ -245,7 +245,7 @@ extension Point: OverflowArithmethic where Numeric: FixedWidthInteger {
     /// Example:
     /// ```
     ///     let a = Point<Int8>(x: 5, y: 1) &+ Point<Int8>(x: 10, y: 3)
-    ///     // a.x == 10; a.y == 4
+    ///     // a.x == 15; a.y == 4
     ///     let b = Point<Int8>(x: 20, y: 100) &+ Point<Int8>(x: 64, y: 121)
     ///     // b.x == 84; b.y == -35 (after overflow)
     /// ```
@@ -265,9 +265,9 @@ extension Point: OverflowArithmethic where Numeric: FixedWidthInteger {
     ///
     /// Example:
     /// ```
-    ///     let a = Point<UInt8>(x: 21, y: 10) &- Point<Int8>(x: 10, y: 2)
+    ///     let a = Point<UInt8>(x: 21, y: 10) &- Point<UInt8>(x: 10, y: 2)
     ///     // a.x == 11; a.y == 8
-    ///     let b = Point<Int8>(x: 10, y: 10) &- Point<Int8>(x: 2, y: 21)
+    ///     let b = Point<UInt8>(x: 10, y: 10) &- Point<UInt8>(x: 2, y: 21)
     ///     // b.x == 8; b.y == 245 (after overflow)
     /// ```
     ///
@@ -309,5 +309,99 @@ extension Point: SignedArithmetic where Numeric: SignedNumeric {
     public mutating func negate() {
         x.negate()
         y.negate()
+    }
+}
+
+// MARK: - Casts
+
+extension Point where Numeric: FixedWidthInteger { // TODO: Make it less of a pain with runtime errors
+
+    /// Creates an integer from the given floating-point value, if it can be
+    /// represented exactly.
+    ///
+    /// If the value passed as `source` is not representable exactly, the result
+    /// is `nil`. In the following example, the constant `x` is successfully
+    /// created from a value of `21.0`, while the attempt to initialize the
+    /// constant `y` from `21.5` fails:
+    ///
+    ///     let x = Int(exactly: 21.0)
+    ///     // x == Optional(21)
+    ///     let y = Int(exactly: 21.5)
+    ///     // y == nil
+    ///
+    /// - Parameter source: A floating-point value to convert to an integer.
+    public init<T>(exactly source: Point<T>) throws where T: BinaryFloatingPoint {
+        guard let x = Numeric(exactly: source.x), let y = Numeric(exactly: source.y) else { throw Error.notRepresentable }
+        self.init(x: x, y: y)
+    }
+
+    /// Creates an integer from the given floating-point value, rounding toward zero.
+    ///
+    /// Any fractional part of the value passed as `source` is removed, rounding
+    /// the value toward zero.
+    ///
+    ///     let x = Int(21.5)
+    ///     // x == 21
+    ///     let y = Int(-21.5)
+    ///     // y == -21
+    ///
+    /// If `source` is outside the bounds of this type after rounding toward
+    /// zero, a runtime error may occur.
+    ///
+    ///     let z = UInt(-21.5)
+    ///     // Error: ...the result would be less than UInt.min
+    ///
+    /// - Parameter source: A floating-point value to convert to an integer.
+    ///   `source` must be representable in this type after rounding toward
+    ///   zero.
+    public init<T>(_ source: Point<T>) where T: BinaryFloatingPoint {
+        self.init(x: Numeric(source.x), y: Numeric(source.y))
+    }
+
+    /// Creates a new instance with the representable value that's closest to the
+    /// given integer.
+    ///
+    /// If the value passed as `source` is greater than the maximum representable
+    /// value in this type, the result is the type's `max` value. If `source` is
+    /// less than the smallest representable value in this type, the result is
+    /// the type's `min` value.
+    ///
+    /// In this example, `x` is initialized as an `Int8` instance by clamping
+    /// `500` to the range `-128...127`, and `y` is initialized as a `UInt`
+    /// instance by clamping `-500` to the range `0...UInt.max`.
+    ///
+    ///     let x = Int8(clamping: 500)
+    ///     // x == 127
+    ///     // x == Int8.max
+    ///
+    ///     let y = UInt(clamping: -500)
+    ///     // y == 0
+    ///
+    /// - Parameter source: An integer to convert to this type.
+    public init<T>(clamping source: Point<T>) where T: BinaryInteger {
+        self.init(x: Numeric(clamping: source.x), y: Numeric(clamping: source.y))
+    }
+
+    /// Creates an integer from the given floating-point value, rounding toward zero.
+    ///
+    /// Any fractional part of the value passed as `source` is removed, rounding
+    /// the value toward zero.
+    ///
+    ///     let x = Int(21.5)
+    ///     // x == 21
+    ///     let y = Int(-21.5)
+    ///     // y == -21
+    ///
+    /// If `source` is outside the bounds of this type after rounding toward
+    /// zero, a runtime error may occur.
+    ///
+    ///     let z = UInt(-21.5)
+    ///     // Error: ...the result would be less than UInt.min
+    ///
+    /// - Parameter source: A floating-point value to convert to an integer.
+    ///   `source` must be representable in this type after rounding toward
+    ///   zero.
+    public init<T>(_ source: Point<T>) where T: BinaryInteger {
+        self.init(x: Numeric(source.x), y: Numeric(source.y))
     }
 }
