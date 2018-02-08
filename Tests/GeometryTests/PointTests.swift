@@ -11,6 +11,7 @@ class PointTests: XCTestCase {
 
     func testEqual() {
         XCTAssertEqual(Point(x: 6, y: 4), Point(x: 6, y: 4))
+        XCTAssertEqual(Point(x: 6.0, y: 4.5), Point(x: 6.0, y: 4.5))
         XCTAssertNotEqual(Point(x: 6, y: 4), Point(x: 4, y: 6))
     }
 
@@ -19,7 +20,7 @@ class PointTests: XCTestCase {
         XCTAssertFalse(Point(x: 6, y: 4) < Point(x: 2, y: 7))
     }
 
-    // MARK: Arithmetic
+    // MARK: - Arithmetic
 
     func testAddition() {
         // In-place
@@ -57,7 +58,62 @@ class PointTests: XCTestCase {
         XCTAssertEqual(p1.y, -6)
     }
 
-    // MARK: Signable
+    // MARK: Extended
+
+    func testDivision() {
+        // In-place
+        var p0 = Point(x: 10.0, y: 21)
+        p0 /= Point(x: 4.0, y: 7)
+        XCTAssertEqual(p0.x, 2.5)
+        XCTAssertEqual(p0.y, 3.0)
+        // Copy
+        let p1 = Point(x: 10, y: 21) / Point(x: 4, y: -7)
+        XCTAssertEqual(p1.x, 2)
+        XCTAssertEqual(p1.y, -3)
+    }
+
+    func testRemainder() {
+        // In-place
+        var p0 = Point(x: 10.0, y: 21)
+        p0 %= Point(x: 3, y: 7)
+        XCTAssertEqual(p0.x, 1)
+        XCTAssertEqual(p0.y, 0)
+        // Copy
+        let p1 = Point(x: 10, y: 21) % Point(x: 4, y: -7)
+        XCTAssertEqual(p1.x, 2)
+        XCTAssertEqual(p1.y, -3)
+    }
+
+    // MARK: Overflow
+
+    func testAdditionOverflow() {
+        let a = Point<Int8>(x: 5, y: 1) &+ Point<Int8>(x: 10, y: 3)
+        XCTAssertEqual(a.x, 15)
+        XCTAssertEqual(a.y, 4)
+        let b = Point<Int8>(x: 20, y: 100) &+ Point<Int8>(x: 64, y: 121)
+        XCTAssertEqual(b.x, 84)
+        XCTAssertEqual(b.y, -35)
+    }
+
+    func testSubtractionOverflow() {
+        let a = Point<UInt8>(x: 21, y: 10) &- Point<UInt8>(x: 10, y: 2)
+        XCTAssertEqual(a.x, 11)
+        XCTAssertEqual(a.y, 8)
+        let b = Point<UInt8>(x: 10, y: 10) &- Point<UInt8>(x: 2, y: 21)
+        XCTAssertEqual(b.x, 8)
+        XCTAssertEqual(b.y, 245)
+    }
+
+    func testMultiplicationOverflow() {
+        let a = Point<Int8>(x: 2, y: 4) &* Point<Int8>(x: -3, y: 5)
+        XCTAssertEqual(a.x, -6)
+        XCTAssertEqual(a.y, 20)
+        let b = Point<Int8>(x: 2, y: 10) &* Point<Int8>(x: 3, y: 50)
+        XCTAssertEqual(b.x, 6)
+        XCTAssertEqual(b.y, -12)
+    }
+
+    // MARK: Signed
 
     func testSigning() {
         // In-place
@@ -70,6 +126,22 @@ class PointTests: XCTestCase {
         XCTAssertTrue(Point(x: -2, y: 3) == -Point(x: 2, y: -3))
     }
 
+    // MARK: Casts
+
+    func testIntegerToFloatingCast() throws {
+        let float = Point<Float>(x: 273, y: 342)
+        XCTAssertNoThrow(try Point<Int>(exactly: float))
+        let int = try Point<Int>(exactly: float)
+        XCTAssertEqual(int.x, 273)
+        XCTAssertEqual(int.y, 342)
+        let float2 = Point<Float>(x: 273.3, y: 342.5)
+        XCTAssertThrowsError(try Point<Int>(exactly: float2)) { error in
+            guard let geoError = error as? Geometry.Error, geoError == .notRepresentable else {
+                return XCTFail("Unrepresentable floating to int conversion must throw \"notRepresentable\" error")
+            }
+        }
+    }
+
     // MARK: Linux Bridge
 
     static var allTests = [
@@ -79,6 +151,11 @@ class PointTests: XCTestCase {
         ("testAddition", testAddition),
         ("testSubstraction", testSubstraction),
         ("testMultiplication", testMultiplication),
+        ("testDivision", testDivision),
+        ("testRemainder", testRemainder),
+        ("testAdditionOverflow", testAdditionOverflow),
+        ("testSubtractionOverflow", testSubtractionOverflow),
+        ("testMultiplicationOverflow", testMultiplicationOverflow),
         ("testSigning", testSigning)
     ]
 }
