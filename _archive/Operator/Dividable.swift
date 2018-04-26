@@ -1,8 +1,7 @@
 import Foundation
 
-/// Defines types that may be be used within extended arithmetic operations. Protocol is used for internal
-/// types to implement required methods properly, therefore the access is restricted to `internal`.
-internal protocol ExtendedArithmetic: BasicArithmetic {
+/// Defines types that support division operations
+public protocol Dividable {
 
     // MARK: Divide
 
@@ -75,47 +74,4 @@ internal protocol ExtendedArithmetic: BasicArithmetic {
     ///   - lhs: The value to divide.
     ///   - rhs: The value to divide `lhs` by. `rhs` must not be zero.
     static func % (lhs: Self, rhs: Self) -> Self
-}
-
-extension ExtendedArithmetic {
-
-    /// Returns the quotient of dividing the first value by the second.
-    ///
-    /// For integer types, any remainder of the division is discarded.
-    ///
-    ///     let x = 21 / 5
-    ///     // x == 4
-    ///
-    /// - Parameters:
-    ///   - lhs: The value to divide.
-    ///   - rhs: The value to divide `lhs` by. `rhs` must not be zero.
-    public static func / (lhs: Self, rhs: Self) -> Self {
-        var copy = lhs
-        copy /= rhs
-        return copy
-    }
-
-    /// Returns the remainder of dividing the first value by the second.
-    ///
-    /// The result of the modulo operator (`%`) has the same sign as `lhs` and is
-    /// less than `rhs.magnitude`.
-    ///
-    ///     let x = 22 % 5
-    ///     // x == 2
-    ///     let y = 22 % -5
-    ///     // y == 2
-    ///     let z = -22 % -5
-    ///     // z == -2
-    ///
-    /// For any two integers `a` and `b`, their quotient `q`, and their remainder
-    /// `r`, `a == b * q + r`.
-    ///
-    /// - Parameters:
-    ///   - lhs: The value to divide.
-    ///   - rhs: The value to divide `lhs` by. `rhs` must not be zero.
-    public static func % (lhs: Self, rhs: Self) -> Self {
-        var copy = lhs
-        copy /= rhs
-        return copy
-    }
 }

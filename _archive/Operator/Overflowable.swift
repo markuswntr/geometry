@@ -1,6 +1,7 @@
 import Foundation
 
-internal protocol OverflowArithmethic {
+/// Defines types that may overflow during additive or subtractive operations.
+public protocol Overflowable {
 
     /// Returns the sum of the two given values, discarding any overflow.
     ///
