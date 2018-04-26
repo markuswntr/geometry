@@ -59,8 +59,11 @@ extension Vector2D where Numeric: ExpressibleByIntegerLiteral {
 
     /// A vector at the arbitrary point `O` (the origin)
     public static var zero: Self {
-        return .init(integerLiteral: 0)
+        return .init(a: 0, b: 0)
     }
+}
+
+extension Vector2D where Self: ExpressibleByIntegerLiteral, Numeric: ExpressibleByIntegerLiteral {
 
     /// Creates an instance with all coordinates initialized to the specified integer value.
     ///
@@ -84,12 +87,12 @@ extension Vector2D where Numeric: FixedWidthInteger {
 
     /// The minimum representable vector in current space.
     public static var min: Self {
-        return .init(integerLiteral: Numeric.min)
+        return .init(a: Numeric.min, b: Numeric.min)
     }
 
     /// The maximum representable vector in current space.
     public static var max: Self {
-        return .init(integerLiteral: Numeric.max)
+        return .init(a: Numeric.max, b: Numeric.max)
     }
 }
 

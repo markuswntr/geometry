@@ -1,11 +1,9 @@
 import Foundation
 
-// MARK: Size
+// MARK: - 2D
 
 /// Since 2D sizes are the most common use cases, it gets the `Size` alias
 public typealias Size = Size2D
-
-// MARK: - 2D
 
 /// A structure that defines a size in a two-dimensional space.
 public struct Size2D<Length: Scalar>: Vector2D {
