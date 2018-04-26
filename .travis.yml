@@ -4,11 +4,11 @@ os:
 language: generic
 sudo: required
 dist: trusty
-osx_image: xcode9.2
-env:
-    - SWIFT_VERSION=swift-4.1-DEVELOPMENT-SNAPSHOT-2018-02-01-a
-install:
-    - eval "$(curl -sL https://swiftenv.fuller.li/install.sh)"
+osx_image: xcode9.3
+# env:
+#     - SWIFT_VERSION=swift-4.1-DEVELOPMENT-SNAPSHOT-2018-02-01-a
+# install:
+#     - eval "$(curl -sL https://swiftenv.fuller.li/install.sh)"
 script:
     - swift build
     - swift build -c release
