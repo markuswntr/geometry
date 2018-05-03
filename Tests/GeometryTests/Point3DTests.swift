@@ -1,23 +1,27 @@
 import XCTest
 @testable import Geometry
 
-class PointTests: XCTestCase {
+class Point3DTests: XCTestCase {
 
     func testZero() {
-        let zero = Point<Int>.zero
+        let zero = Point3D<Int>.zero
         XCTAssertEqual(zero.x, 0)
         XCTAssertEqual(zero.y, 0)
     }
 
     func testEqual() {
-        XCTAssertEqual(Point(x: 6, y: 4), Point(x: 6, y: 4))
-        XCTAssertEqual(Point(x: 6.0, y: 4.5), Point(x: 6.0, y: 4.5))
-        XCTAssertNotEqual(Point(x: 6, y: 4), Point(x: 4, y: 6))
+        XCTAssertEqual(Point3D(a: 6, b: 4), Point3D(a: 6, b: 4, c: 0))
+        XCTAssertEqual(Point3D(a: 6.0, b: 4.5), Point3D(a: 6.0, b: 4.5, c: 0))
+        XCTAssertNotEqual(Point3D(a: 6, b: 4, c: 0), Point3D(a: 4, b: 6))
+
+        XCTAssertEqual(Point3D(x: 6, y: 4, z: 3), Point3D(x: 6, y: 4, z: 3))
+        XCTAssertEqual(Point3D(x: 6.0, y: 4.5, z: 3.2), Point3D(x: 6.0, y: 4.5, z: 3.2))
+        XCTAssertNotEqual(Point3D(x: 6, y: 4, z: 18), Point3D(x: 4, y: 6, z: 18))
     }
 
     func testComparable() {
-        XCTAssertTrue(Point(x: 2, y: 0) < Point(x: 0, y: 3))
-        XCTAssertFalse(Point(x: 6, y: 4) < Point(x: 2, y: 7))
+        XCTAssertTrue(Point3D(x: 2, y: 0, z: 1) < Point3D(x: 0, y: 3, z: 1))
+        XCTAssertFalse(Point3D(x: 6, y: 4, z: 4) < Point3D(x: 2, y: 7, z: 3))
     }
 
     // MARK: - Arithmetic
@@ -117,12 +121,14 @@ class PointTests: XCTestCase {
 
     func testSigning() {
         // In-place
-        var p = Point(x: 3, y: -3)
+        var p = Point3D(x: 3, y: -3, z: 33)
+        print(p)
         p.negate()
         XCTAssertEqual(p.x, -3)
         XCTAssertEqual(p.y, 3)
+        XCTAssertEqual(p.z, -33)
         // Copy
-        XCTAssertTrue(Point(x: -2, y: 3) == -Point(x: 2, y: -3))
+        XCTAssertTrue(Point3D(x: -2, y: 3, z: -33) == -Point3D(x: 2, y: -3, z: 33))
     }
 
     // MARK: Linux Bridge

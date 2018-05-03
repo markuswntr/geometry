@@ -1,12 +1,12 @@
 import Foundation
 
 /// A geometry that is defined by a point and size in a two-dimensional space (a box).
-public struct Box2D<Unit> where Unit: Scalar & Comparable {
+public struct Box2D<Unit> where Unit: Numeric & Comparable {
 
-    /// The box origin, the "starting point".
+    /// The origin of the box, the "starting point".
     public var origin: Point2D<Unit>
 
-    /// The size of the boxs.
+    /// The size of the box.
     public var size: Size2D<Unit>
 
     public init(origin: Point2D<Unit>, size: Size2D<Unit>) {
@@ -23,7 +23,7 @@ extension Box2D where Unit: ExpressibleByIntegerLiteral {
     }
 }
 
-extension Box2D where Unit: SignedInteger {
+extension Box2D where Unit: BinaryInteger {
 
     /// The center point of the rectangle.
     public var center: Point2D<Unit> {

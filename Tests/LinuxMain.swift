@@ -2,5 +2,6 @@ import XCTest
 @testable import GeometryTests
 
 XCTMain([
-    testCase(PointTests.allTests)
+    testCase(Point2DTests.allTests),
+    testCase(Point3DTests.allTests)
 ])

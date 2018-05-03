@@ -1,10 +1,14 @@
 import Foundation
 
-/// A vector protocol that basically defines a numeric type within which it is measured.
-public protocol Vector where Numeric: Scalar {
+/// A vector protocol that basically defines a scalar/numeric type within which it is described.
+public protocol Vector where Scalar: Numeric {
 
-    associatedtype Numeric
+    /// [Scalars](https://en.wikipedia.org/wiki/Scalar_(mathematics)) are quantities that are
+    /// fully described by a magnitude (or in the swift universe, by a `Numeric` value) alone.
+    associatedtype Scalar
 }
+
+// MARK: - 2D
 
 /// Protocol to be implemented by types that are representable by a two dimensional vector.
 ///
@@ -16,123 +20,33 @@ public protocol Vector where Numeric: Scalar {
 /// - Any arbitrary ordered pair of numbers.
 public protocol Vector2D: Vector {
 
-    var a: Numeric { get }
+    /// The first ordered value of the vector.
+    var a: Scalar { get }
 
-    var b: Numeric { get }
+    /// The second ordered value of the vector.
+    var b: Scalar { get }
 
-    init(a: Numeric, b: Numeric)
-}
-
-// MARK: - Equatable & Comparable
-
-extension Vector2D where Self: Equatable {
-
-    /// Returns a Boolean value indicating whether two values are equal.
-    ///
-    /// Equality is the inverse of inequality. For any values `a` and `b`,
-    /// `a == b` implies that `a != b` is `false`.
+    /// Initializes a new instance of `Self`, using given paramaters.
     ///
     /// - Parameters:
-    ///   - lhs: A value to compare.
-    ///   - rhs: Another value to compare.
-    public static func == (lhs: Self, rhs: Self) -> Bool {
-        return lhs.a == rhs.a && lhs.b == rhs.b
-    }
+    ///   - a: The first ordered value of the vector.
+    ///   - a: The second ordered value of the vector.
+    init(a: Scalar, b: Scalar)
 }
 
-extension Vector2D where Self: Comparable, Numeric: Comparable {
+// MARK: - 3D
 
-    /// Returns a Boolean value indicating whether the `x + y` of the first
-    /// point is less than `x + y` of the second point.
-    ///
-    /// - Parameters:
-    ///   - lhs: A value to compare.
-    ///   - rhs: Another value to compare.
-    public static func < (lhs: Self, rhs: Self) -> Bool {
-        return lhs.a + lhs.b < rhs.a + rhs.b
-    }
+public protocol Vector3D: Vector2D {
+
+    var c: Scalar { get }
+
+    init(a: Scalar, b: Scalar, c: Scalar)
 }
 
-// MARK: - ExpressibleByIntegerLiteral
+extension Vector3D {
 
-extension Vector2D where Numeric: ExpressibleByIntegerLiteral {
-
-    /// A vector at the arbitrary point `O` (the origin)
-    public static var zero: Self {
-        return .init(a: 0, b: 0)
-    }
-}
-
-extension Vector2D where Self: ExpressibleByIntegerLiteral, Numeric: ExpressibleByIntegerLiteral {
-
-    /// Creates an instance with all coordinates initialized to the specified integer value.
-    ///
-    /// Do not call this initializer directly. Instead, initialize a variable or
-    /// constant using an integer literal. For example:
-    ///
-    ///     let p: Point2D = 23
-    ///
-    /// In this example, the assignment to the `p` constant calls this integer
-    /// literal initializer behind the scenes.
-    ///
-    /// - Parameter value: The value to assign to all coordinates.
-    public init(integerLiteral value: Numeric) {
-        self.init(a: value, b: value)
-    }
-}
-
-// MARK: - Minimum & Maximum
-
-extension Vector2D where Numeric: FixedWidthInteger {
-
-    /// The minimum representable vector in current space.
-    public static var min: Self {
-        return .init(a: Numeric.min, b: Numeric.min)
-    }
-
-    /// The maximum representable vector in current space.
-    public static var max: Self {
-        return .init(a: Numeric.max, b: Numeric.max)
-    }
-}
-
-// MARK: - Signed Numeric
-
-extension Vector2D where Numeric: SignedNumeric {
-
-    /// Returns the additive inverse of the specified value.
-    ///
-    /// The negation operator (prefix `-`) returns the additive inverse of its
-    /// argument.
-    ///
-    ///     let x = Vector2D(a: 21, b: -30)
-    ///     let y = -x
-    ///     // y.a == -21
-    ///     // y.b == 30
-    ///
-    /// The resulting value must be representable in the same type as the
-    /// argument. In particular, negating a signed, fixed-width integer type's
-    /// minimum results in a value that cannot be represented.
-    ///
-    ///     let z = -Int8.min
-    ///     // Overflow error
-    ///
-    /// - Returns: The additive inverse of this value.
-    prefix public static func - (operand: Self) -> Self {
-        return .init(a: -operand.a, b: -operand.b)
-    }
-
-    /// Replaces this value with its additive inverse.
-    ///
-    /// The following example uses the `negate()` method to negate the value of
-    /// an integer `x`:
-    ///
-    ///     let x = Vector2D(a: 21, b: -30)
-    ///     x.negate()
-    ///     // x.a == -21
-    ///     // x.b == 30
-    public mutating func negate() {
-        self = -self
+    public init<Vector: Vector2D>(vector: Vector, c: Scalar) where Vector.Scalar == Self.Scalar {
+        self.init(a: vector.a, b: vector.b, c: c)
     }
 }
 

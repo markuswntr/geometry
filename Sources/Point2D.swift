@@ -1,16 +1,9 @@
 import Foundation
 
-// MARK: Point
-
-/// Since 2D points are the most common use cases, it gets the `Point` alias
-public typealias Point = Point2D
-
-// MARK: - 2D
-
 /// A structure that defines a point in a two-dimensional space.
-public struct Point2D<Coordinate>: Vector2D, Equatable, Comparable where Coordinate: Scalar & Comparable {
+public struct Point2D<Coordinate>: Vector2D, Equatable, Comparable where Coordinate: Numeric & Comparable {
 
-    public typealias Numeric = Coordinate
+    public typealias Scalar = Coordinate
 
     public var a: Coordinate
 
@@ -52,7 +45,7 @@ extension Point2D {
 
 // MARK: String Convertible
 
-extension Point2D: CustomStringConvertible where Numeric: CustomStringConvertible {
+extension Point2D: CustomStringConvertible where Scalar: CustomStringConvertible {
 
     /// A textual representation of this instance.
     ///
@@ -68,11 +61,13 @@ extension Point2D: CustomStringConvertible where Numeric: CustomStringConvertibl
     ///     // Prints "(x: 21, y: 30)"
     /// ```
     public var description: String {
-        return "(x: \(String(describing: x)), y: \(String(describing: y)))"
+        let x = String(describing: a)
+        let y = String(describing: b)
+        return "(x: \(x), y: \(y))"
     }
 }
 
-extension Point2D: CustomDebugStringConvertible where Numeric: CustomDebugStringConvertible {
+extension Point2D: CustomDebugStringConvertible where Scalar: CustomDebugStringConvertible {
 
     /// A textual representation of this instance, suitable for debugging.
     ///
@@ -88,6 +83,9 @@ extension Point2D: CustomDebugStringConvertible where Numeric: CustomDebugString
     ///     // Prints "Point2D<Int>(x: 21, y: 30)"
     /// ```
     public var debugDescription: String {
-        return "Point2D<\(String(describing: Numeric.self))>(x: \(String(describing: x)), y: \(String(describing: y)))"
+        let type = String(describing: Scalar.self)
+        let x = String(describing: a)
+        let y = String(describing: b)
+        return "Point2D<\(type)>(x: \(x), y: \(y))"
     }
 }

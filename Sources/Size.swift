@@ -6,9 +6,9 @@ import Foundation
 public typealias Size = Size2D
 
 /// A structure that defines a size in a two-dimensional space.
-public struct Size2D<Length: Scalar>: Vector2D {
+public struct Size2D<Length>: Vector2D where Length: Numeric {
 
-    public typealias Numeric = Length
+    public typealias Scalar = Length
 
     public var a: Length
 
@@ -50,7 +50,7 @@ extension Size2D {
 
 // MARK: String Convertible
 
-extension Size2D: CustomStringConvertible where Numeric: CustomStringConvertible {
+extension Size2D: CustomStringConvertible where Scalar: CustomStringConvertible {
 
     /// A textual representation of this instance.
     ///
@@ -70,7 +70,7 @@ extension Size2D: CustomStringConvertible where Numeric: CustomStringConvertible
     }
 }
 
-extension Size2D: CustomDebugStringConvertible where Numeric: CustomDebugStringConvertible {
+extension Size2D: CustomDebugStringConvertible where Scalar: CustomDebugStringConvertible {
 
     /// A textual representation of this instance, suitable for debugging.
     ///
@@ -86,6 +86,6 @@ extension Size2D: CustomDebugStringConvertible where Numeric: CustomDebugStringC
     ///     // Prints "Point2D<Int>(x: 21, y: 30)"
     /// ```
     public var debugDescription: String {
-        return "Size2D<\(String(describing: Numeric.self))>(width: \(String(describing: width)), height: \(String(describing: height)))"
+        return "Size2D<\(String(describing: Scalar.self))>(width: \(String(describing: width)), height: \(String(describing: height)))"
     }
 }
