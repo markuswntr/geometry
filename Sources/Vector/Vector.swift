@@ -50,6 +50,22 @@ extension Vector3D {
     }
 }
 
+// MARK: - 4D
+
+public protocol Vector4D: Vector3D {
+
+    var d: Scalar { get }
+
+    init(a: Scalar, b: Scalar, c: Scalar, d: Scalar)
+}
+
+extension Vector4D {
+
+    public init<Vector: Vector3D>(vector: Vector, d: Scalar) where Vector.Scalar == Self.Scalar {
+        self.init(a: vector.a, b: vector.b, c: vector.c, d: d)
+    }
+}
+
 //
 ///// Vectors are quantities that are fully described by both a magnitude and a direction in its containing space.
 //public protocol Vector {
