@@ -15,6 +15,14 @@ public struct Box2D<Unit> where Unit: Numeric & Comparable {
     }
 }
 
+extension Box2D {
+
+    /// Convenience init
+    public init(x: Unit, y: Unit, width: Unit, height: Unit) {
+        self.init(origin: Point2D(a: x, b: y), size: Size2D(a: width, b: height))
+    }
+}
+
 extension Box2D where Unit: ExpressibleByIntegerLiteral {
 
     /// Box at the origin whose width and height are both zero.
