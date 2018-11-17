@@ -4,7 +4,7 @@ import XCTest
 class Point2Tests: XCTestCase {
 
     func testZero() {
-        let zero = Point2<Int>.zero
+        let zero = Point2<Int32>.zero
         XCTAssertEqual(zero.x, 0)
         XCTAssertEqual(zero.y, 0)
     }
