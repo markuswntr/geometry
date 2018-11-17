@@ -32,6 +32,15 @@ extension Point2 {
         set { _vector[.index1] = newValue }
         get { return _vector[.index1] }
     }
+
+    /// Initializes a new point at given position.
+    ///
+    /// - Parameters:
+    ///   - x: The `x` value of the point.
+    ///   - y: The `y` value of the point.
+    public init(x: Scalar, y: Scalar) {
+        self.init(sequence: [x, y])
+    }
 }
 
 // MARK: String Convertible
