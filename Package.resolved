@@ -1,0 +1,16 @@
+{
+  "object": {
+    "pins": [
+      {
+        "package": "Vector",
+        "repositoryURL": "https://github.com/markuswntr/vector.git",
+        "state": {
+          "branch": "master",
+          "revision": "51860a2b1e43e86422c36dc11046acc4656f73ea",
+          "version": null
+        }
+      }
+    ]
+  },
+  "version": 1
+}
