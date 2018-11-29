@@ -1,29 +1,42 @@
 import Vector
+import Foundation
 
 /// A structure that defines a point in a two-dimensional space.
-public struct Point2<Coordinate> where Coordinate: Numeric & RawVectorizable2, Coordinate.RawVector2: Equatable {
+public struct Point2<Coordinate>: Vector2 where Coordinate: Numeric & RawVectorizable2, Coordinate.RawVector2: Equatable {
 
-    /// The underlying vector, that stores the coordinates and is masked by the point
-    public private(set) var _vector: Vector2<Coordinate>
+    /// The collection Index/Indices to access values of `Self`
+    public typealias Index = VectorIndex2
+
+    /// `Point2` is defined by `Coordinate` values, that are `Element`s of the collection
+    public typealias Element = Coordinate
+
+    /// The underlying vector type
+    public typealias Vector = Element.RawVector2
+
+    /// The underlying simd vector.
+    ///
+    /// Must not be used directly. Exposed for performance reasons only.
+    /// Use the `x,y` properties to access the coordinates.
+    public var _vector: Vector
 
     /// The `x` coordinate of the point.
     public var x: Coordinate {
         /// Masks the vector value at `index0`.
-        @_transparent set { _vector[.index0] = newValue }
-        @_transparent get { return _vector[.index0] }
+        @_transparent set { self[.index0] = newValue }
+        @_transparent get { return self[.index0] }
     }
 
     /// The `y` coordinate of the point.
     public var y: Coordinate {
         /// Masks the vector value at `index1`.
-        @_transparent set { _vector[.index1] = newValue }
-        @_transparent get { return _vector[.index1] }
+        @_transparent set { self[.index1] = newValue }
+        @_transparent get { return self[.index1] }
     }
 
     /// Initializes `self` with given vector as underlying optimized vector
     ///
     /// - Parameter vector: The vector to mask behind `self`.
-    @_transparent public init(vector: Vector2<Coordinate>) {
+    @_transparent public init(vector: Vector) {
         _vector = vector
     }
 
@@ -33,7 +46,7 @@ public struct Point2<Coordinate> where Coordinate: Numeric & RawVectorizable2, C
     ///   - x: The `x` value of the point.
     ///   - y: The `y` value of the point.
     @_transparent public init(x: Coordinate, y: Coordinate) {
-        self.init(vector: Vector2<Coordinate>(index0: x, index1: y))
+        self.init(index0: x, index1: y)
     }
 }
 
@@ -128,23 +141,23 @@ extension Point2 where Coordinate.RawVector2: AdditiveArithmetic {
     }
 
     /// Moves the point by adding (elementwise) `rhs` to `lhs`.
-    @_transparent public static func + (lhs: Point2, rhs: Vector2<Coordinate>) -> Point2 {
-        return .init(vector: lhs._vector + rhs)
+    @_transparent public static func + (lhs: Point2, rhs: Displacement2<Coordinate>) -> Point2 {
+        return .init(vector: lhs._vector + rhs._vector)
     }
 
     /// Moves the point by subtracting (elementwise) `rhs` from `lhs`.
-    @_transparent public static func - (lhs: Point2, rhs: Vector2<Coordinate>) -> Point2 {
-        return .init(vector: lhs._vector - rhs)
+    @_transparent public static func - (lhs: Point2, rhs: Displacement2<Coordinate>) -> Point2 {
+        return .init(vector: lhs._vector - rhs._vector)
     }
 
     /// Moves the point inline by adding (elementwise) `rhs` to `lhs`.
-    @_transparent public static func += (lhs: inout Point2, rhs: Vector2<Coordinate>) {
-        lhs._vector += rhs
+    @_transparent public static func += (lhs: inout Point2, rhs: Displacement2<Coordinate>) {
+        lhs._vector += rhs._vector
     }
 
     /// Moves the point inline by subtracting (elementwise) `rhs` from `lhs`.
-    @_transparent public static func -= (lhs: inout Point2, rhs: Vector2<Coordinate>) {
-        lhs._vector -= rhs
+    @_transparent public static func -= (lhs: inout Point2, rhs: Displacement2<Coordinate>) {
+        lhs._vector -= rhs._vector
     }
 }
 
@@ -156,21 +169,21 @@ extension Point2 where Coordinate.RawVector2: AdditiveOverflowArithmetic {
     }
 
     /// Moves the point by adding (elementwise) `rhs` to `lhs`.
-    @_transparent public static func &+ (lhs: Point2, rhs: Vector2<Coordinate>) -> Point2 {
-        return .init(vector: lhs._vector &+ rhs)
+    @_transparent public static func &+ (lhs: Point2, rhs: Displacement2<Coordinate>) -> Point2 {
+        return .init(vector: lhs._vector &+ rhs._vector)
     }
 
     /// Moves the point by subtracting (elementwise) `rhs` from `lhs`.
-    @_transparent public static func &- (lhs: Point2, rhs: Vector2<Coordinate>) -> Point2 {
-        return .init(vector: lhs._vector &- rhs)
+    @_transparent public static func &- (lhs: Point2, rhs: Displacement2<Coordinate>) -> Point2 {
+        return .init(vector: lhs._vector &- rhs._vector)
     }
 }
 
 extension Point2 where Coordinate.RawVector2: MultiplicativeArithmetic, Coordinate == Coordinate.RawVector2.Scalar {
 
     /// Elementwise product of `lhs` and `rhs` (A.k.a. the Hadamard or Schur vector product).
-    @_transparent public static func * (lhs: Point2, rhs: Vector2<Coordinate>) -> Point2 {
-        return .init(vector: lhs._vector * rhs)
+    @_transparent public static func * (lhs: Point2, rhs: Displacement2<Coordinate>) -> Point2 {
+        return .init(vector: lhs._vector * rhs._vector)
     }
 
     /// Scalar-Vector product.
@@ -179,8 +192,8 @@ extension Point2 where Coordinate.RawVector2: MultiplicativeArithmetic, Coordina
     }
 
     /// Elementwise quotient of `lhs` and `rhs`.
-    @_transparent public static func / (lhs: Point2, rhs: Vector2<Coordinate>) -> Point2 {
-        return .init(vector: lhs._vector / rhs)
+    @_transparent public static func / (lhs: Point2, rhs: Displacement2<Coordinate>) -> Point2 {
+        return .init(vector: lhs._vector / rhs._vector)
     }
 
     /// Divide vector by scalar.
@@ -189,13 +202,13 @@ extension Point2 where Coordinate.RawVector2: MultiplicativeArithmetic, Coordina
     }
 
     /// Multiply `lhs` by `rhs` (elementwise).
-    @_transparent public static func *= (lhs: inout Point2, rhs: Vector2<Coordinate>) {
-        lhs._vector *= rhs
+    @_transparent public static func *= (lhs: inout Point2, rhs: Displacement2<Coordinate>) {
+        lhs._vector *= rhs._vector
     }
 
     /// Divide `lhs` by `rhs` (elementwise).
-    @_transparent public static func /= (lhs: inout Point2, rhs: Vector2<Coordinate>) {
-        lhs._vector /= rhs
+    @_transparent public static func /= (lhs: inout Point2, rhs: Displacement2<Coordinate>) {
+        lhs._vector /= rhs._vector
     }
 
     /// Scales `lhs` by `rhs`.
@@ -212,8 +225,8 @@ extension Point2 where Coordinate.RawVector2: MultiplicativeArithmetic, Coordina
 extension Point2 where Coordinate.RawVector2: MultiplicativeOverflowArithmetic, Coordinate == Coordinate.RawVector2.Scalar {
 
     /// Elementwise product of `lhs` and `rhs` (A.k.a. the Hadamard or Schur vector product).
-    @_transparent public static func &* (lhs: Point2, rhs: Vector2<Coordinate>) -> Point2 {
-        return .init(vector: lhs._vector &* rhs)
+    @_transparent public static func &* (lhs: Point2, rhs: Displacement2<Coordinate>) -> Point2 {
+        return .init(vector: lhs._vector &* rhs._vector)
     }
 
     /// Scalar-Vector product.
@@ -222,8 +235,8 @@ extension Point2 where Coordinate.RawVector2: MultiplicativeOverflowArithmetic, 
     }
 
     /// Elementwise quotient of `lhs` and `rhs`.
-    @_transparent public static func / (lhs: Point2, rhs: Vector2<Coordinate>) -> Point2 {
-        return .init(vector: lhs._vector / rhs)
+    @_transparent public static func / (lhs: Point2, rhs: Displacement2<Coordinate>) -> Point2 {
+        return .init(vector: lhs._vector / rhs._vector)
     }
 
     /// Divide vector by scalar.
@@ -232,7 +245,7 @@ extension Point2 where Coordinate.RawVector2: MultiplicativeOverflowArithmetic, 
     }
 
     /// Divide `lhs` by `rhs` (elementwise).
-    @_transparent public static func /= (lhs: inout Point2, rhs: Vector2<Coordinate>) {
-        lhs._vector /= rhs
+    @_transparent public static func /= (lhs: inout Point2, rhs: Displacement2<Coordinate>) {
+        lhs._vector /= rhs._vector
     }
 }
