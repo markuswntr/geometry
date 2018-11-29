@@ -129,7 +129,7 @@ class Point2Tests: XCTestCase {
 
     static var allTests = [
         ("testZero", testZero),
-        ("testEqual", testEqual),
+        ("testEqual", testEqual)
         // ("testComparable", testComparable),
 //        ("testAddition", testAddition),
 //        ("testSubstraction", testSubstraction),

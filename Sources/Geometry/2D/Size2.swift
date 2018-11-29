@@ -217,4 +217,3 @@ extension Size2 where Length.RawVector2: MultiplicativeOverflowArithmetic, Lengt
         lhs._vector /= rhs._vector
     }
 }
-
